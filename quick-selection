@@ -1,7 +1,33 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-selection="$(wl-paste --primary --no-newline 2>/dev/null || true)"
+# Native Wayland applications expose highlighted text through the primary
+# selection. Wine/XWayland applications such as Affinity often do not, so ask
+# those applications to copy the active selection and immediately restore the
+# user's clipboard.
+active_window="$(hyprctl activewindow -j 2>/dev/null || printf '{}')"
+xwayland="$(jq -r '.xwayland // false' <<<"$active_window")"
+
+if [[ "$xwayland" == true ]]; then
+  clipboard_present=true
+  if ! saved_clipboard="$(wl-paste --no-newline 2>/dev/null)"; then
+    clipboard_present=false
+    saved_clipboard=""
+  fi
+
+  wl-copy --clear 2>/dev/null || true
+  xdotool key --clearmodifiers ctrl+c 2>/dev/null || true
+  sleep 0.18
+  selection="$(wl-paste --no-newline 2>/dev/null || true)"
+
+  if [[ "$clipboard_present" == true ]]; then
+    printf '%s' "$saved_clipboard" | wl-copy --type text/plain --sensitive
+  else
+    wl-copy --clear 2>/dev/null || true
+  fi
+else
+  selection="$(wl-paste --primary --no-newline 2>/dev/null || true)"
+fi
 
 case "$selection" in
   a|A|à|á|â|ä|À|Á|Â|Ä|ae|AE|æ|Æ|c|C|ç|Ç|e|E|é|è|ê|ë|É|È|Ê|Ë|i|I|î|ï|Î|Ï|o|O|ô|ö|Ô|Ö|oe|OE|œ|Œ|u|U|ù|û|ü|Ù|Û|Ü|y|Y|ÿ|Ÿ) ;;

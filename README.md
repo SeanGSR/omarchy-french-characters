@@ -47,6 +47,7 @@ Sélectionnez une lettre dans une application, puis utilisez `SUPER + A`. Le pet
 - Hyprland
 - `wl-clipboard`
 - `wtype`
+- `xdotool` (applications Wine/XWayland comme Affinity)
 - `jq`
 
 ## English

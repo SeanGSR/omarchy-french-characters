@@ -13,10 +13,17 @@ if ! saved_clipboard="$(wl-paste --no-newline 2>/dev/null)"; then
 fi
 
 # Wait until the overlay has closed and focus has returned to the editor.
-sleep 0.22
+sleep 0.28
+
+active_window="$(hyprctl activewindow -j 2>/dev/null || printf '{}')"
+xwayland="$(jq -r '.xwayland // false' <<<"$active_window")"
 
 # Backspace removes the active selection without writing it to the clipboard.
-wtype -k backspace
+if [[ "$xwayland" == true ]]; then
+  xdotool key --clearmodifiers BackSpace 2>/dev/null || true
+else
+  wtype -k backspace
+fi
 
 # Use Omarchy's native sensitive-clipboard pattern. Chromium/Electron receives
 # Unicode reliably, while clipboard managers ignore the temporary character.
@@ -24,7 +31,15 @@ copy_pid=""
 printf '%s' "$character" | wl-copy --type text/plain --sensitive --foreground &
 copy_pid=$!
 sleep 0.15
-wtype -M shift -k Insert -m shift 2>/dev/null || true
+if [[ "$xwayland" == true ]]; then
+  # Wine applications, including Affinity, reliably accept the conventional
+  # Windows paste shortcut but may ignore Shift+Insert.
+  xdotool key --clearmodifiers ctrl+v 2>/dev/null || true
+else
+  # Shift+Insert remains the most compatible choice for native Wayland apps,
+  # Chromium/Electron and terminals.
+  wtype -M shift -k Insert -m shift 2>/dev/null || true
+fi
 sleep 0.2
 kill "$copy_pid" 2>/dev/null || true
 wait "$copy_pid" 2>/dev/null || true
