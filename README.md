@@ -19,6 +19,14 @@ omarchy plugin add https://github.com/SeanGSR/omarchy-french-characters.git --en
 
 Le bouton clavier apparaît ensuite dans la barre Omarchy et ouvre le panneau principal.
 
+## Désinstallation
+
+```bash
+omarchy plugin remove fr.ldng.caracteres-francais --yes
+```
+
+Si vous avez ajouté le raccourci de sélection rapide ci-dessous, retirez également son bloc de `~/.config/hypr/bindings.lua`.
+
 ## Sélection rapide
 
 Ajoutez ce raccourci à `~/.config/hypr/bindings.lua` :
