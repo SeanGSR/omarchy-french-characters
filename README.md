@@ -2,6 +2,8 @@
 
 Un panneau compact pour saisir facilement les caractères français et typographiques depuis un clavier QWERTY US.
 
+![Aperçu du panneau Caractères français et de la sélection rapide](preview.png)
+
 ## Fonctionnalités
 
 - Recherche instantanée (`e`, `a`, `guillemet`, `degré`, etc.)
