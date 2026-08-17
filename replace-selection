@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+character="${1:-}"
+original="${2:-}"
+[[ -n "$character" ]] || exit 0
+
+# Preserve the user's clipboard: selection mode should only edit text.
+clipboard_present=true
+if ! saved_clipboard="$(wl-paste --no-newline 2>/dev/null)"; then
+  clipboard_present=false
+  saved_clipboard=""
+fi
+
+# Wait until the overlay has closed and focus has returned to the editor.
+sleep 0.22
+
+# Backspace removes the active selection without writing it to the clipboard.
+wtype -k backspace
+
+# Use Omarchy's native sensitive-clipboard pattern. Chromium/Electron receives
+# Unicode reliably, while clipboard managers ignore the temporary character.
+copy_pid=""
+printf '%s' "$character" | wl-copy --type text/plain --sensitive --foreground &
+copy_pid=$!
+sleep 0.15
+wtype -M shift -k Insert -m shift 2>/dev/null || true
+sleep 0.2
+kill "$copy_pid" 2>/dev/null || true
+wait "$copy_pid" 2>/dev/null || true
+
+if [[ "$clipboard_present" == true ]]; then
+  wl-copy "$saved_clipboard"
+else
+  wl-copy --clear
+fi

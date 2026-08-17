@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+selection="$(wl-paste --primary --no-newline 2>/dev/null || true)"
+
+case "$selection" in
+  a|A|à|á|â|ä|À|Á|Â|Ä|ae|AE|æ|Æ|c|C|ç|Ç|e|E|é|è|ê|ë|É|È|Ê|Ë|i|I|î|ï|Î|Ï|o|O|ô|ö|Ô|Ö|oe|OE|œ|Œ|u|U|ù|û|ü|Ù|Û|Ü|y|Y|ÿ|Ÿ) ;;
+  *)
+    omarchy-notification-send "Caractères français" "Sélectionne une lettre française ou sa forme non accentuée" >/dev/null 2>&1 || true
+    exit 0
+    ;;
+esac
+
+cursor="$(hyprctl cursorpos -j)"
+payload="$(jq -cn \
+  --arg selection "$selection" \
+  --argjson x "$(jq '.x' <<<"$cursor")" \
+  --argjson y "$(jq '.y' <<<"$cursor")" \
+  '{quick:true, selection:$selection, x:$x, y:$y}')"
+
+omarchy-shell shell summon fr.ldng.caracteres-francais "$payload"

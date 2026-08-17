@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "fr.ldng.caracteres-francais",
+  "name": "Caractères français",
+  "version": "1.0.0",
+  "author": "ldng",
+  "description": "A searchable panel for copying French characters from a US QWERTY keyboard",
+  "kinds": ["overlay", "bar-widget"],
+  "keepLoaded": true,
+  "entryPoints": {
+    "overlay": "Characters.qml",
+    "barWidget": "BarWidget.qml"
+  },
+  "barWidget": {
+    "displayName": "Caractères français",
+    "description": "Search and copy accented French letters and punctuation",
+    "category": "Utilities",
+    "aliases": ["french", "accents", "caracteres", "characters"],
+    "allowMultiple": false
+  }
+}
