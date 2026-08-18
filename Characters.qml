@@ -159,12 +159,6 @@ Item {
     resultGrid.positionViewAtIndex(selectedIndex, GridView.Contain)
   }
 
-  function selectAbsolute(index) {
-    if (displayModel.count === 0) return
-    selectedIndex = Math.max(0, Math.min(index, displayModel.count - 1))
-    resultGrid.positionViewAtIndex(selectedIndex, GridView.Contain)
-  }
-
   function copyIndex(index) {
     if (index < 0 || index >= displayModel.count) return
     var value = displayModel.get(index).character
@@ -218,10 +212,10 @@ Item {
         Keys.priority: Keys.BeforeItem
         Keys.onPressed: function(event) {
           if (event.key === Qt.Key_Escape) {
-            if (!root.quickMode && root.filterText) root.setFilter("")
+            if (root.filterText) root.setFilter("")
             else root.dismiss()
             event.accepted = true
-          } else if (!root.quickMode && event.key === Qt.Key_Backspace) {
+          } else if (event.key === Qt.Key_Backspace) {
             root.setFilter(root.filterText.slice(0, -1))
             event.accepted = true
           } else if (event.key === Qt.Key_Left) {
@@ -229,27 +223,12 @@ Item {
           } else if (event.key === Qt.Key_Right) {
             root.select(1); event.accepted = true
           } else if (event.key === Qt.Key_Up) {
-            root.selectAbsolute(root.selectedIndex - root.columns); event.accepted = true
+            root.select(-root.columns); event.accepted = true
           } else if (event.key === Qt.Key_Down) {
-            root.selectAbsolute(root.selectedIndex + root.columns); event.accepted = true
-          } else if (event.key === Qt.Key_Tab) {
-            root.select((event.modifiers & Qt.ShiftModifier) ? -1 : 1)
-            event.accepted = true
-          } else if (event.key === Qt.Key_Home) {
-            root.selectAbsolute(0); event.accepted = true
-          } else if (event.key === Qt.Key_End) {
-            root.selectAbsolute(displayModel.count - 1); event.accepted = true
-          } else if (event.key === Qt.Key_PageUp) {
-            root.selectAbsolute(root.selectedIndex - root.columns * root.visibleRows)
-            event.accepted = true
-          } else if (event.key === Qt.Key_PageDown) {
-            root.selectAbsolute(root.selectedIndex + root.columns * root.visibleRows)
-            event.accepted = true
+            root.select(root.columns); event.accepted = true
           } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
             root.copyIndex(root.selectedIndex); event.accepted = true
-          } else if (root.quickMode && event.key === Qt.Key_Space) {
-            root.copyIndex(root.selectedIndex); event.accepted = true
-          } else if (!root.quickMode && event.text && event.text.length === 1 && event.text.charCodeAt(0) >= 32) {
+          } else if (event.text && event.text.length === 1 && event.text.charCodeAt(0) >= 32) {
             root.setFilter(root.filterText + event.text)
             event.accepted = true
           }

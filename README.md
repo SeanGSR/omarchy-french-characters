@@ -12,17 +12,6 @@ Un panneau compact pour saisir facilement les caractères français et typograph
 - Variantes minuscules et majuscules séparées
 - Ponctuation, espaces insécables, fractions, unités et symboles décoratifs
 - Interface compacte adaptée au thème Omarchy
-- Navigation complète au clavier
-
-## Navigation au clavier
-
-- Saisir du texte pour filtrer, puis `Retour arrière` pour corriger
-- `←` `→` `↑` `↓` pour parcourir la grille
-- `Tab` et `Maj+Tab` pour passer au caractère suivant ou précédent
-- `Début`, `Fin`, `Page précédente` et `Page suivante` pour les déplacements rapides
-- `Entrée` pour copier ou remplacer le caractère sélectionné
-- `Échap` pour effacer la recherche, puis fermer le panneau
-- Dans la sélection rapide, `Espace` remplace également la lettre choisie
 
 ## Installation
 
